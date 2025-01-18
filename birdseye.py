@@ -1,5 +1,7 @@
-# from http://web.archive.org/web/20060719001948/http://todotxt.com/library/birdseye.py/birdseye.py.txt
+# from http://web.archive.org/web/20090303140913/http://todotxt.com:80/library/birdseye.py/birdseye.py.txt
 # http://web.archive.org/web/20060627180306/http://todotxt.com/
+#!/usr/bin/python
+
 """ TODO.TXT Bird's Eye View Reporter
 USAGE:  
 	birdseye.py [todo.txt] [done.txt]
@@ -7,24 +9,22 @@ USAGE:
 USAGE NOTES:
 	Expects two text files as parameters, each of which formatted as follows:
 	- One todo per line, ie, "call Mom"
-	- with an optional project association indicated as such: "p:projectname"
+	- with an optional project association indicated as such: "+projectname"
 	- with the context in which the tasks should be completed, indicated as such: "@context"
 	- with the task priority optionally listed at the front of the line, in parens, ie, "(A)"
 	
 	For example, 4 lines of todo.txt might look like this:
 
-	p:garagesale @phone schedule Goodwill pickup
+	+garagesale @phone schedule Goodwill pickup
 	(A) @phone Tell Mom I love her
-	p:writing draft Great American Novel
+	+writing draft Great American Novel
 	(B) smell the roses
 	
 	The done.txt file is a list of completed todo's from todo.txt.
 	
-	See more on formatting todo.txt here:
-	http://www.lifehacker.com/software/text/geek-to-live-list-your-life-in-txt-166299.php
+	See more on todo.txt here:
+	http://todotxt.com
 	
-	Get some additional scripts for managing todo.txt and done.txt here:
-	http://www.lifehacker.com/software/command-line/geek-to-live-script-your-life-in-txt-169618.php
 	
 OUTPUT:
 	Displays a list of:
@@ -32,14 +32,19 @@ OUTPUT:
 	- contexts in which open todo's exist
 	- contexts and projects with tasks that have been prioritized
 	- projects which are completely done (don't have any open todo's)
+
+CHANGELOG:
+	2006.07.29 - Now supports p:, p- and + project notation.  Tx, Pedro!
+	2006.05.02 - Released
 """
 
 
 import sys
 #import datetime
 
-__version__ = "1.0"
+__version__ = "1.1"
 __date__ = "2006/05/02"
+__updated__ = "2006/07/29"
 __author__ = "Gina Trapani (ginatrapani@gmail.com)"
 __copyright__ = "Copyright 2006, Gina Trapani"
 __license__ = "GPL"
@@ -120,7 +125,7 @@ def main(argv):
 			if words[0][0:1] == ("("):
 				prioritized = True
 			for word in words:
-				if word[0:2] == "p:":
+				if word[0:2] == "p:" or word[0:2] == "p-" or word[0:1] == "+":
 					if word not in projects:
 						projects[word] = 1
 					else:
@@ -147,7 +152,7 @@ def main(argv):
 		for line in f:
 			words = line.split()
 			for word in words:
-				if word[0:2] == "p:":
+				if word[0:2] == "p:" or word[0:2] == "p-" or word[0:1] == "+":
 					if word not in completedTasks:
 						completedTasks[word] = 1
 					else:
